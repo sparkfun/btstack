@@ -170,6 +170,9 @@ stage: clean
 	cp $(DIR)/README.md $(STAGE_DIR)/README.md
 	cp -R $(DIR)/examples/. $(STAGE_DIR)/examples/
 
+	## The BTstack license - use  that for this library
+	cp $(BTSTACK_ROOT)/LICENSE $(STAGE_DIR)/LICENSE
+
 # ---------------------------------------------------------------------------
 
 release: stage

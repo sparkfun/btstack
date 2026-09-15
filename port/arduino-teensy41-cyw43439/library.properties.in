@@ -1,10 +1,9 @@
-name=BTstackTeensy
+name=Teensy Wireless Shield BTStack
 version=1.0.0
-author=BlueKitchen GmbH, adapted for Teensy by contributors (git @VERSION@)
-maintainer=BlueKitchen GmbH <contact@bluekitchen-gmbh.com>
+author=BlueKitchen GmbH, adapted for Teensy by SparkFun Electroncs
+maintainer=SparkFun Electroncs
 sentence=BTstack Bluetooth stack for Teensy 4.x with a Murata Type 1YN (CYW43439) module.
 paragraph=Provides BLE GAP/GATT central & peripheral APIs plus Classic A2DP Sink, AVRCP and HFP Hands-Free, over a 4-wire HCI UART and PCM audio interface. See README.md for wiring.
 category=Communication
-url=https://github.com/bluekitchen/btstack
+url=https://github.com/sparkfun/btstack/tree/teensy-wireless-shield/port/arduino-teensy41-cyw43439
 architectures=avr
-includes=BTstackTeensy.h
