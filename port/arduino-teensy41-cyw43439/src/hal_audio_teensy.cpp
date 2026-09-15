@@ -22,11 +22,13 @@
 #include <Arduino.h>
 #include <Audio.h>
 
-extern "C" {
+extern "C"
+{
 #include "hal_audio.h"
 }
 
-namespace {
+namespace
+{
 
 constexpr unsigned kNumBuffers = 2;
 constexpr unsigned kBufferFrames = AUDIO_BLOCK_SAMPLES; // 128
@@ -44,14 +46,17 @@ AudioConnection g_patch_left(g_queue_left, 0, g_i2s_out, 0);
 AudioConnection g_patch_right(g_queue_right, 0, g_i2s_out, 1);
 IntervalTimer g_sink_timer;
 
-void sink_timer_isr() {
+void sink_timer_isr()
+{
     unsigned index = g_play_index;
 
     int16_t *left = g_queue_left.getBuffer();
     int16_t *right = g_queue_right.getBuffer();
-    if (left != nullptr && right != nullptr) {
+    if (left != nullptr && right != nullptr)
+    {
         const int16_t *interleaved = g_buffer[index];
-        for (unsigned i = 0; i < kBufferFrames; i++) {
+        for (unsigned i = 0; i < kBufferFrames; i++)
+        {
             left[i] = interleaved[2 * i + 0];
             right[i] = interleaved[2 * i + 1];
         }
@@ -60,61 +65,73 @@ void sink_timer_isr() {
     }
 
     g_play_index = (index + 1) % kNumBuffers;
-    if (g_buffer_played_callback != nullptr) {
+    if (g_buffer_played_callback != nullptr)
+    {
         g_buffer_played_callback((uint8_t)index);
     }
 }
 
 } // namespace
 
-extern "C" {
+extern "C"
+{
 
-void hal_audio_sink_init(uint8_t channels, uint32_t sample_rate, void (*buffer_played_callback)(uint8_t buffer_index)) {
-    (void)channels; // always rendered as stereo -- see hal_audio_sink_get_num_output_buffers()
-    (void)sample_rate;
-    AudioMemory(8);
-    g_buffer_played_callback = buffer_played_callback;
-    g_play_index = 0;
-}
-
-uint32_t hal_audio_sink_get_frequency(void) {
-    // Native Teensy Audio Library block rate; see file header caveat.
-    return (uint32_t)AUDIO_SAMPLE_RATE_EXACT;
-}
-
-uint16_t hal_audio_sink_get_num_output_buffers(void) {
-    return kNumBuffers;
-}
-
-uint16_t hal_audio_sink_get_num_output_buffer_samples(void) {
-    return kBufferFrames;
-}
-
-int16_t *hal_audio_sink_get_output_buffer(uint8_t buffer_index) {
-    return g_buffer[buffer_index];
-}
-
-void hal_audio_sink_start(void) {
-    if (g_running) {
-        return;
+    void hal_audio_sink_init(uint8_t channels, uint32_t sample_rate,
+                             void (*buffer_played_callback)(uint8_t buffer_index))
+    {
+        (void)channels; // always rendered as stereo -- see hal_audio_sink_get_num_output_buffers()
+        (void)sample_rate;
+        AudioMemory(8);
+        g_buffer_played_callback = buffer_played_callback;
+        g_play_index = 0;
     }
-    g_running = true;
-    g_play_index = 0;
-    // Period of one AUDIO_BLOCK_SAMPLES block at the native sample rate.
-    float period_us = 1000000.0f * (float)kBufferFrames / AUDIO_SAMPLE_RATE_EXACT;
-    g_sink_timer.begin(sink_timer_isr, period_us);
-}
 
-void hal_audio_sink_stop(void) {
-    g_sink_timer.end();
-    g_running = false;
-    // AudioPlayQueue has no stop(): it just goes silent once its queue drains,
-    // which happens naturally once the ISR above stops feeding it.
-}
+    uint32_t hal_audio_sink_get_frequency(void)
+    {
+        // Native Teensy Audio Library block rate; see file header caveat.
+        return (uint32_t)AUDIO_SAMPLE_RATE_EXACT;
+    }
 
-void hal_audio_sink_close(void) {
-    hal_audio_sink_stop();
-    g_buffer_played_callback = nullptr;
-}
+    uint16_t hal_audio_sink_get_num_output_buffers(void)
+    {
+        return kNumBuffers;
+    }
+
+    uint16_t hal_audio_sink_get_num_output_buffer_samples(void)
+    {
+        return kBufferFrames;
+    }
+
+    int16_t *hal_audio_sink_get_output_buffer(uint8_t buffer_index)
+    {
+        return g_buffer[buffer_index];
+    }
+
+    void hal_audio_sink_start(void)
+    {
+        if (g_running)
+        {
+            return;
+        }
+        g_running = true;
+        g_play_index = 0;
+        // Period of one AUDIO_BLOCK_SAMPLES block at the native sample rate.
+        float period_us = 1000000.0f * (float)kBufferFrames / AUDIO_SAMPLE_RATE_EXACT;
+        g_sink_timer.begin(sink_timer_isr, period_us);
+    }
+
+    void hal_audio_sink_stop(void)
+    {
+        g_sink_timer.end();
+        g_running = false;
+        // AudioPlayQueue has no stop(): it just goes silent once its queue drains,
+        // which happens naturally once the ISR above stops feeding it.
+    }
+
+    void hal_audio_sink_close(void)
+    {
+        hal_audio_sink_stop();
+        g_buffer_played_callback = nullptr;
+    }
 
 } // extern "C"

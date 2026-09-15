@@ -44,8 +44,8 @@
 #define MAX_ATT_DB_SIZE 200
 #define MAX_NR_GATT_CLIENTS 1
 #define MAX_NR_HCI_CONNECTIONS 2
-#define MAX_NR_L2CAP_CHANNELS  4
-#define MAX_NR_L2CAP_SERVICES  4
+#define MAX_NR_L2CAP_CHANNELS 4
+#define MAX_NR_L2CAP_SERVICES 4
 #define MAX_NR_LE_DEVICE_DB_ENTRIES 4
 #define MAX_NR_SM_LOOKUP_ENTRIES 3
 #define MAX_NR_WHITELIST_ENTRIES 1
@@ -55,7 +55,7 @@
 // This is enabled by not defining NVM_NUM_DEVICE_DB_ENTRIES
 //
 // #define NVM_NUM_DEVICE_DB_ENTRIES  8
-#define NVM_NUM_LINK_KEYS          8
+#define NVM_NUM_LINK_KEYS 8
 
 // no flash-backed TLV in this port -> in-memory link key / LE device DB only
 // (pairing is lost on reset).

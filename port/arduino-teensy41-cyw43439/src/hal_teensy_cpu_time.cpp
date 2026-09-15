@@ -2,28 +2,33 @@
 
 #include <Arduino.h>
 
-extern "C" {
+extern "C"
+{
 
 #include "hal_cpu.h"
 #include "hal_time_ms.h"
 
-void hal_cpu_disable_irqs(void) {
-    __disable_irq();
-}
+    void hal_cpu_disable_irqs(void)
+    {
+        __disable_irq();
+    }
 
-void hal_cpu_enable_irqs(void) {
-    __enable_irq();
-}
+    void hal_cpu_enable_irqs(void)
+    {
+        __enable_irq();
+    }
 
-void hal_cpu_enable_irqs_and_sleep(void) {
-    // No low-power sleep entry implemented -- just re-enable interrupts and
-    // let the run loop poll again immediately. WFI is not used here because
-    // it would also need to survive USB/millis() servicing on Teensy.
-    __enable_irq();
-}
+    void hal_cpu_enable_irqs_and_sleep(void)
+    {
+        // No low-power sleep entry implemented -- just re-enable interrupts and
+        // let the run loop poll again immediately. WFI is not used here because
+        // it would also need to survive USB/millis() servicing on Teensy.
+        __enable_irq();
+    }
 
-uint32_t hal_time_ms(void) {
-    return millis();
-}
+    uint32_t hal_time_ms(void)
+    {
+        return millis();
+    }
 
 } // extern "C"

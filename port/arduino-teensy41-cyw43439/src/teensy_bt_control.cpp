@@ -19,49 +19,52 @@
 #define BTSTACK_TEENSY_BT_ON_SETTLE_MS 150
 #endif
 
-namespace {
+namespace
+{
 
-void control_init(const void *config) {
+void control_init(const void *config)
+{
     (void)config;
     pinMode(BTSTACK_TEENSY_BT_ON_PIN, OUTPUT);
     digitalWrite(BTSTACK_TEENSY_BT_ON_PIN, LOW);
 }
 
-int control_on(void) {
+int control_on(void)
+{
     digitalWrite(BTSTACK_TEENSY_BT_ON_PIN, HIGH);
     delay(BTSTACK_TEENSY_BT_ON_SETTLE_MS);
     return 0;
 }
 
-int control_off(void) {
+int control_off(void)
+{
     digitalWrite(BTSTACK_TEENSY_BT_ON_PIN, LOW);
     return 0;
 }
 
-int control_sleep(void) {
+int control_sleep(void)
+{
     // Not implemented: the module is left fully powered between HCI activity.
     return 0;
 }
 
-int control_wake(void) {
+int control_wake(void)
+{
     return 0;
 }
 
-void control_register_for_power_notifications(void (*cb)(POWER_NOTIFICATION_t event)) {
+void control_register_for_power_notifications(void (*cb)(POWER_NOTIFICATION_t event))
+{
     (void)cb;
 }
 
 const btstack_control_t teensy_bt_control = {
-    &control_init,
-    &control_on,
-    &control_off,
-    &control_sleep,
-    &control_wake,
-    &control_register_for_power_notifications,
+    &control_init, &control_on, &control_off, &control_sleep, &control_wake, &control_register_for_power_notifications,
 };
 
 } // namespace
 
-extern "C" const btstack_control_t *teensy_bt_control_instance(void) {
+extern "C" const btstack_control_t *teensy_bt_control_instance(void)
+{
     return &teensy_bt_control;
 }
